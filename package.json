@@ -1,0 +1,22 @@
+{
+  "name": "dugganusa-slack",
+  "version": "1.0.0",
+  "description": "Slack bot: paste an IP, domain, hash, or CVE — get instant threat enrichment from 1M+ IOCs.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.1.0"
+  },
+  "keywords": ["slack", "bot", "threat-intelligence", "ioc", "cybersecurity", "dugganusa"],
+  "author": "DugganUSA LLC <patrick@dugganusa.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pduggusa/dugganusa-slack"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
