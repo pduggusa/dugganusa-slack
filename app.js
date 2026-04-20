@@ -39,6 +39,7 @@ const PATTERNS = {
   domain: /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:com|net|org|io|ai|dev|xyz|info|biz|co|me|app|cloud|online|site|tech|ru|cn|ir|kp|de|fr|nl|uk|au|br|jp|kr|sg|il|sa|ae)\b/gi,
   sha256: /\b[a-fA-F0-9]{64}\b/g,
   cve: /CVE-\d{4}-\d{4,7}/gi,
+  onion: /\b[a-z2-7]{56}\.onion\b/g,
 };
 
 const SKIP = new Set(['0.0.0.0','127.0.0.1','8.8.8.8','8.8.4.4','1.1.1.1','google.com','github.com','microsoft.com','slack.com','example.com','localhost']);
@@ -132,6 +133,8 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
           '`/dugganusa 185.39.19.176` — look up a single indicator',
           '`/dugganusa scan <paste text>` — extract + check all IOCs',
           '`/dugganusa aipm google.com` — AIPM audit URL',
+          '`/dugganusa tor <ip>` — check if IP is a Tor relay',
+          '`/dugganusa tor hunt` — suspicious Tor relays',
           '`/dugganusa help` — this message',
           '',
           '1,080,000+ IOCs · 275+ consumers · 46 countries',
@@ -152,6 +155,67 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
         text: { type: 'mrkdwn', text: ':mag: *AIPM Audit:* <https://aipmsec.com/audit.html?domain=' + encodeURIComponent(domain) + '|Audit ' + domain + '>\n5 AI models · 7 signals · 15 seconds · Free' },
       }],
     });
+    return;
+  }
+
+  // Tor relay mode
+  if (text.startsWith('tor ')) {
+    const torArg = text.slice(4).trim();
+
+    if (torArg === 'hunt') {
+      const url = new URL(API_URL + '/tor/hunt');
+      const headers = {};
+      if (API_KEY) headers['Authorization'] = 'Bearer ' + API_KEY;
+      try {
+        const json = await httpGet(url.toString(), headers);
+        const relays = (json.data?.relays || json.data || []).slice(0, 10);
+        if (!relays.length) {
+          await respond({ response_type: 'ephemeral', text: 'No suspicious Tor relays found.' });
+          return;
+        }
+        const blocks = [{ type: 'section', text: { type: 'mrkdwn', text: ':onion: *Suspicious Tor Relays* — top ' + relays.length } }];
+        for (const r of relays) {
+          const flags = Array.isArray(r.flags) ? r.flags.join(',') : (r.flags || '');
+          blocks.push({
+            type: 'section',
+            text: { type: 'mrkdwn', text: '`' + (r.address || r.ip || '?') + '` *' + (r.nickname || '?') + '* — ' + flags + ' | ' + (r.country || '?') + ' | ' + (r.asnOrg || '?') + ' | Score: ' + (r.suspicionScore || r.score || '?') },
+          });
+        }
+        blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> Tor Attribution Framework' }] });
+        await respond({ response_type: 'in_channel', blocks });
+      } catch (e) {
+        await respond({ response_type: 'ephemeral', text: 'Tor hunt error: ' + e.message });
+      }
+      return;
+    }
+
+    // tor <ip> — check single IP
+    const url = new URL(API_URL + '/tor/relays');
+    url.searchParams.set('q', torArg);
+    url.searchParams.set('limit', '1');
+    const headers = {};
+    if (API_KEY) headers['Authorization'] = 'Bearer ' + API_KEY;
+    try {
+      const json = await httpGet(url.toString(), headers);
+      const relays = json.data?.relays || json.data?.hits || [];
+      if (relays.length > 0 && relays[0].address === torArg) {
+        const r = relays[0];
+        const flags = Array.isArray(r.flags) ? r.flags.join(', ') : (r.flags || '');
+        await respond({
+          response_type: 'in_channel',
+          blocks: [{
+            type: 'section',
+            text: { type: 'mrkdwn', text: ':onion: *Tor Relay Found:* `' + torArg + '`\n*Nickname:* ' + (r.nickname || '?') + '\n*Flags:* ' + flags + '\n*Country:* ' + (r.country || '?') + '\n*ASN:* ' + (r.asnOrg || r.asn || '?') + '\n*Bandwidth:* ' + (r.bandwidth || '?') },
+          },
+          { type: 'divider' },
+          { type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> Tor Attribution Framework' }] }],
+        });
+      } else {
+        await respond({ response_type: 'ephemeral', text: ':white_check_mark: `' + torArg + '` is NOT a known Tor relay.' });
+      }
+    } catch (e) {
+      await respond({ response_type: 'ephemeral', text: 'Tor check error: ' + e.message });
+    }
     return;
   }
 
