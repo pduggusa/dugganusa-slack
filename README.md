@@ -1,6 +1,15 @@
 # DugganUSA Slack Bot
 
-**Paste an IP. Get threat intel. 1,080,000+ IOCs in your Slack channel.**
+**Paste an IP. Get threat intel. 1.10M+ IOCs in your Slack channel.**
+
+## What's New (v1.2.0)
+
+- **Three live, no-auth validation endpoints** now prove feed quality, and you can cite them straight from your channel:
+  - **Novelty** — [feed-uniqueness](https://analytics.dugganusa.com/api/v1/feed-uniqueness): ~75%+ of what we publish ThreatFox doesn't have (measured live, durable across deploys).
+  - **Timeliness** — [kev-lead](https://analytics.dugganusa.com/api/v1/kev-lead): exploited CVEs flagged ~31 days ahead of CISA KEV on average.
+  - **Accuracy** — [spamhaus-validation](https://analytics.dugganusa.com/api/v1/spamhaus-validation): Spamhaus independently corroborates our first-hand contributions.
+- **Supply-chain coverage** — the corpus now ingests OSV malicious-package feeds for **both npm and PyPI** (named-malicious packages, zero-heuristic), plus daily GitHub Hunt detections of malware-staging repos. Paste a package name or repo URL into `/dugganusa scan` and known-bad packages light up too.
+- **STIX feed is now API-key-enforced** — see Setup. The free tier is a free *registered* key, not anonymous.
 
 ## Commands
 
@@ -29,7 +38,7 @@ Visit [api.slack.com/apps](https://api.slack.com/apps) → Create New App → Fr
 **Slash Commands:**
 - Command: `/dugganusa`
 - Request URL: `https://your-server.com/slack/events`
-- Description: "Look up threat indicators against 1M+ IOCs"
+- Description: "Look up threat indicators against 1.10M+ IOCs"
 
 **Event Subscriptions:**
 - Request URL: `https://your-server.com/slack/events`
@@ -45,10 +54,12 @@ npm install
 # Set environment variables
 export SLACK_BOT_TOKEN=xoxb-your-token
 export SLACK_SIGNING_SECRET=your-signing-secret
-export DUGGANUSA_API_KEY=dugusa_your_key  # optional
+export DUGGANUSA_API_KEY=dugusa_your_key  # required — register a free key (see below)
 
 npm start
 ```
+
+The STIX feed is API-key-enforced: anonymous requests get `401`, an unregistered Bearer gets `429`. Grab a **free registered key** at [analytics.dugganusa.com/stix/register](https://analytics.dugganusa.com/stix/register) and set it as `DUGGANUSA_API_KEY`.
 
 For Socket Mode (no public URL needed):
 ```bash
@@ -63,15 +74,15 @@ OAuth & Permissions → Install to Workspace → Authorize.
 ## What It Does
 
 - Extracts IOCs (IPs, domains, SHA256, CVEs) from any text
-- Correlates each against 1.08M+ indicators across 44 indexes
+- Correlates each against 1.10M+ indicators across 44 indexes (~17.9M+ documents)
 - Returns enrichment: malware family, threat type, source, hit count
 - Links to full correlation view
-- Powered by the same STIX feed trusted by 275+ organizations
+- Powered by the same STIX feed trusted by 275+ consumers in 46 countries
 
 ## Part of the DugganUSA Ecosystem
 
 - [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=DugganUSALLC.dugganusa-threat-intel)
-- [CLI Tool](https://github.com/pduggusa/dugganusa-cli) — `npx dugganusa-lookup`
+- [CLI Tool](https://github.com/pduggusa/dugganusa-cli) — `npx dugganusa-cli`
 - [GitHub Action](https://github.com/pduggusa/dugganusa-action)
 - [Chrome Extension](https://github.com/pduggusa/dugganusa-chrome)
 - [STIX Feed](https://analytics.dugganusa.com/api/v1/stix-feed)
