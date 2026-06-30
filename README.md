@@ -1,13 +1,14 @@
 # DugganUSA Slack Bot
 
-**Paste an IP. Get threat intel. 1.10M+ IOCs in your Slack channel.**
+**Paste an IP. Get threat intel. 1.5M+ IOCs in your Slack channel.**
 
-## What's New (v1.2.0)
+## What's New (v1.2.1)
 
-- **Three live, no-auth validation endpoints** now prove feed quality, and you can cite them straight from your channel:
+- **Four live, no-auth validation endpoints** now prove feed quality, and you can cite them straight from your channel:
   - **Novelty** — [feed-uniqueness](https://analytics.dugganusa.com/api/v1/feed-uniqueness): ~75%+ of what we publish ThreatFox doesn't have (measured live, durable across deploys).
-  - **Timeliness** — [kev-lead](https://analytics.dugganusa.com/api/v1/kev-lead): exploited CVEs flagged ~31 days ahead of CISA KEV on average.
+  - **Timeliness** — [kev-lead](https://analytics.dugganusa.com/api/v1/kev-lead): a live ledger of how far ahead of CISA KEV we flagged each exploited CVE — positive leads, same-day, and no-receipt all shown honestly, with receipts.
   - **Accuracy** — [spamhaus-validation](https://analytics.dugganusa.com/api/v1/spamhaus-validation): Spamhaus independently corroborates our first-hand contributions.
+  - **Liveness** — [feed-efficacy](https://analytics.dugganusa.com/api/v1/feed-efficacy): opt-in consumer reports of when our indicators actually fire on real traffic — proof the feed is operationally live, not just large.
 - **Supply-chain coverage** — the corpus now ingests OSV malicious-package feeds for **both npm and PyPI** (named-malicious packages, zero-heuristic), plus daily GitHub Hunt detections of malware-staging repos. Paste a package name or repo URL into `/dugganusa scan` and known-bad packages light up too.
 - **STIX feed is now API-key-enforced** — see Setup. The free tier is a free *registered* key, not anonymous.
 
@@ -38,7 +39,7 @@ Visit [api.slack.com/apps](https://api.slack.com/apps) → Create New App → Fr
 **Slash Commands:**
 - Command: `/dugganusa`
 - Request URL: `https://your-server.com/slack/events`
-- Description: "Look up threat indicators against 1.10M+ IOCs"
+- Description: "Look up threat indicators against 1.5M+ IOCs"
 
 **Event Subscriptions:**
 - Request URL: `https://your-server.com/slack/events`
@@ -74,7 +75,7 @@ OAuth & Permissions → Install to Workspace → Authorize.
 ## What It Does
 
 - Extracts IOCs (IPs, domains, SHA256, CVEs) from any text
-- Correlates each against 1.10M+ indicators across 44 indexes (~17.9M+ documents)
+- Correlates each against 1.5M+ indicators across 65 indexes (~38M+ documents)
 - Returns enrichment: malware family, threat type, source, hit count
 - Links to full correlation view
 - Powered by the same STIX feed trusted by 275+ consumers in 46 countries

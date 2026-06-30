@@ -1,7 +1,7 @@
 {
   "name": "dugganusa-slack",
-  "version": "1.2.0",
-  "description": "Slack bot: paste an IP, domain, hash, or CVE \u2014 get instant threat enrichment from 1.10M+ IOCs.",
+  "version": "1.2.1",
+  "description": "Slack bot: paste an IP, domain, hash, or CVE \u2014 get instant threat enrichment from 1.5M+ IOCs.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
