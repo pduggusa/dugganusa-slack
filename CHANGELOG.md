@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0] - 2026-07-19
+
+### Security
+- **Fixed a fail-open defect: a failed lookup was posted to Slack as "clean".** `lookupIOC` returned a bare `{ found: false }` on every error path, byte-identical to a verified-clean result, so an expired API key, a 429, a timeout, or an API outage rendered as a green `:white_check_mark: clean. Not found in 1.5M+ IOC index.` in a security channel. Absence of evidence is not evidence of safety.
+- Lookups are now tri-state (`ok`, `status: 'found' | 'not-found' | 'unknown'`), matching `dugganusa-scanner-core` v1.3.0. `found` is retained for backwards compatibility.
+- **`httpGet` never checked `res.statusCode`.** A non-2xx response carries a parseable JSON error body whose absent `correlations` was counted as "no hits". This was live, not theoretical: anonymous access to `/search/correlate` now returns HTTP 401, so a bot running without `DUGGANUSA_API_KEY` was reporting every indicator clean. Non-2xx now rejects.
+- `formatResult` renders a distinct `:grey_question: lookup failed` block for unknown results. All four call sites (slash-command scan, single lookup, app-mention scan, app-mention single) inherit the fix.
+
 ## [1.2.2] - 2026-06-30
 
 ### Fixed

@@ -61,7 +61,16 @@ function httpGet(url, headers = {}) {
     const req = https.get(url, { headers, timeout: 10000 }, (res) => {
       let body = '';
       res.on('data', c => body += c);
-      res.on('end', () => { try { resolve(JSON.parse(body)); } catch { reject(new Error('Invalid JSON')); } });
+      res.on('end', () => {
+        // A non-2xx response (401 expired/missing key, 429 rate limit, 5xx
+        // outage) still carries a parseable JSON error body. Parsing it and
+        // reading the absent `correlations` as "no hits" is how an outage used
+        // to render as a green "clean" checkmark in Slack.
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          return reject(new Error('HTTP ' + res.statusCode));
+        }
+        try { resolve(JSON.parse(body)); } catch { reject(new Error('Invalid JSON')); }
+      });
     });
     req.on('error', reject);
     req.on('timeout', () => { req.destroy(); reject(new Error('Timeout')); });
@@ -77,8 +86,17 @@ async function lookupIOC(value) {
     const json = await httpGet(url.toString(), headers);
     const correlations = json.data?.correlations || {};
     const hits = Object.values(correlations).reduce((s, h) => s + (Array.isArray(h) ? h.length : 0), 0);
-    return hits > 0 ? { found: true, hits, data: correlations } : { found: false, hits: 0 };
-  } catch (e) { return { found: false, hits: 0, error: e.message }; }
+    return hits > 0
+      ? { ok: true, status: 'found', found: true, hits, data: correlations }
+      : { ok: true, status: 'not-found', found: false, hits: 0 };
+  } catch (e) {
+    // Absence of evidence is not evidence of safety. This used to return a bare
+    // { found: false }, byte-identical to a verified-clean lookup, so an expired
+    // key, a 429, a timeout, or an outage posted a green ":white_check_mark:
+    // clean" into a security channel. `status: 'unknown'` keeps the failure
+    // distinguishable for formatResult.
+    return { ok: false, status: 'unknown', found: false, hits: 0, error: e.message || e.code || 'lookup failed' };
+  }
 }
 
 function summarize(data) {
@@ -103,6 +121,19 @@ function formatResult(value, result) {
       text: {
         type: 'mrkdwn',
         text: ':warning: *`' + value + '`* — ' + summarize(result.data) + ' (' + result.hits + ' cross-index hits)\n<' + API_URL + '/search/correlate?q=' + encodeURIComponent(value) + '|View full enrichment>',
+      },
+    };
+  }
+  // A lookup that failed is UNKNOWN, not clean. This branch used to fall through
+  // to the green checkmark below, so an outage told a security channel that a
+  // live C2 was clean. Every caller of formatResult gets this fix for free.
+  if (!result.ok) {
+    return {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: ':grey_question: *`' + value + '`* — *lookup failed* (' + (result.error || 'unknown error') +
+          '). NOT checked — this is not a clean result. Retry, or check the API key.',
       },
     };
   }
