@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.1] - 2026-09-29
+
+### Security
+- First tagged release carrying the 1.3.0 fail-closed fix: a lookup that does not succeed is no longer reported as clean.
+
+### Changed
+- Refreshed corpus figures from the live `/api/v1/search/stats` (1.9M+ IOCs, ~68M documents across 70 indexes).
+- Removed the retired "275+ consumers in 46 countries" line. It counted blocked, User-Agent-less scrapers as consumers, so we stopped quoting it on 2026-05-30.
+
 ## [1.3.0] - 2026-07-19
 
 ### Security

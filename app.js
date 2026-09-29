@@ -141,7 +141,7 @@ function formatResult(value, result) {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: ':white_check_mark: *`' + value + '`* — clean. Not found in 1.5M+ IOC index.',
+      text: ':white_check_mark: *`' + value + '`* — clean. Not found in 1.9M+ IOC index.',
     },
   };
 }
@@ -168,7 +168,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
           '`/dugganusa tor hunt` — suspicious Tor relays',
           '`/dugganusa help` — this message',
           '',
-          '1,080,000+ IOCs · 275+ consumers · 46 countries',
+          '1.9M+ IOCs · 68M+ documents',
           '<https://analytics.dugganusa.com/stix/register|Free API key> · <https://aipmsec.com|AIPM Audit> · <https://www.dugganusa.com|dugganusa.com>',
         ].join('\n') },
       }],
@@ -268,7 +268,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
       blocks.push({ type: 'section', text: { type: 'mrkdwn', text: '_(' + (iocs.length - 15) + ' more indicators not shown — capped at 15)_' } });
     }
     blocks.push({ type: 'divider' });
-    blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.5M+ IOCs · <https://analytics.dugganusa.com/stix/register|Free API key>' }] });
+    blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.9M+ IOCs · <https://analytics.dugganusa.com/stix/register|Free API key>' }] });
 
     await respond({ response_type: 'in_channel', blocks });
     return;
@@ -281,7 +281,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
     blocks: [
       formatResult(text, result),
       { type: 'divider' },
-      { type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.5M+ IOCs · <https://aipmsec.com|AIPM Audit>' }] },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.9M+ IOCs · <https://aipmsec.com|AIPM Audit>' }] },
     ],
   });
 });

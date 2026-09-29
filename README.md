@@ -1,6 +1,6 @@
 # DugganUSA Slack Bot
 
-**Paste an IP. Get threat intel. 1.5M+ IOCs in your Slack channel.**
+**Paste an IP. Get threat intel. 1.9M+ IOCs in your Slack channel.**
 
 ## What's New (v1.2.1)
 
@@ -39,7 +39,7 @@ Visit [api.slack.com/apps](https://api.slack.com/apps) → Create New App → Fr
 **Slash Commands:**
 - Command: `/dugganusa`
 - Request URL: `https://your-server.com/slack/events`
-- Description: "Look up threat indicators against 1.5M+ IOCs"
+- Description: "Look up threat indicators against 1.9M+ IOCs"
 
 **Event Subscriptions:**
 - Request URL: `https://your-server.com/slack/events`
@@ -75,10 +75,10 @@ OAuth & Permissions → Install to Workspace → Authorize.
 ## What It Does
 
 - Extracts IOCs (IPs, domains, SHA256, CVEs) from any text
-- Correlates each against 1.5M+ indicators across 65 indexes (~38M+ documents)
+- Correlates each against 1.9M+ indicators across 70 indexes (~68M+ documents)
 - Returns enrichment: malware family, threat type, source, hit count
 - Links to full correlation view
-- Powered by the same STIX feed trusted by 275+ consumers in 46 countries
+- Powered by the DugganUSA STIX feed
 
 ## Part of the DugganUSA Ecosystem
 
