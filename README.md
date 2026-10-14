@@ -1,6 +1,10 @@
 # DugganUSA Slack Bot
 
-**Paste an IP. Get threat intel. 1.9M+ IOCs in your Slack channel.**
+**You do you. I do me. We share contexts.**
+
+Your channel keeps its conversation; the bot shares only the indicator you paste and returns the DugganUSA Feed's context on it.
+
+**Paste an IP. Get threat intel from the DugganUSA Feed in your Slack channel.** Corpus size: [live counts](https://analytics.dugganusa.com/api/v1/search/stats).
 
 ## What's New (v1.2.1)
 
@@ -39,7 +43,7 @@ Visit [api.slack.com/apps](https://api.slack.com/apps) → Create New App → Fr
 **Slash Commands:**
 - Command: `/dugganusa`
 - Request URL: `https://your-server.com/slack/events`
-- Description: "Look up threat indicators against 1.9M+ IOCs"
+- Description: "Look up threat indicators against the DugganUSA Feed"
 
 **Event Subscriptions:**
 - Request URL: `https://your-server.com/slack/events`
@@ -75,7 +79,7 @@ OAuth & Permissions → Install to Workspace → Authorize.
 ## What It Does
 
 - Extracts IOCs (IPs, domains, SHA256, CVEs) from any text
-- Correlates each against 1.9M+ indicators across 70 indexes (~68M+ documents)
+- Correlates each against the DugganUSA corpus ([live counts](https://analytics.dugganusa.com/api/v1/search/stats))
 - Returns enrichment: malware family, threat type, source, hit count
 - Links to full correlation view
 - Powered by the DugganUSA STIX feed
@@ -99,7 +103,7 @@ MIT — [DugganUSA LLC](https://www.dugganusa.com)
 <!-- DUGGANUSA-FAMILY-FOOTER-V1 -->
 ## DugganUSA Defender Family
 
-Same threat corpus, surfaced wherever you live. Open source, MIT licensed, receipts on every repo.
+Same DugganUSA Feed, surfaced wherever you live. Open source, MIT licensed, receipts on every repo.
 
 | Plugin | Surface |
 |---|---|
@@ -116,8 +120,8 @@ Same threat corpus, surfaced wherever you live. Open source, MIT licensed, recei
 | [dugganusa-cli](https://github.com/pduggusa/dugganusa-cli) | CLI scanner |
 | [dugganusa-chrome](https://github.com/pduggusa/dugganusa-chrome) | Chrome extension |
 | [dugganusa-action](https://github.com/pduggusa/dugganusa-action) | GitHub Action |
-| [dredd-mcp](https://github.com/pduggusa/dredd-mcp) | Pre-flight MCP security (this repo) |
+| [dredd-mcp](https://github.com/pduggusa/dredd-mcp) | Dredd: pre-flight MCP security |
 
-Backed by the live DugganUSA threat intel platform: [analytics.dugganusa.com](https://analytics.dugganusa.com).
+Backed by the [DugganUSA Feed](https://analytics.dugganusa.com/stix). Numbers are live: [/api/v1/search/stats](https://analytics.dugganusa.com/api/v1/search/stats). Pricing: [analytics.dugganusa.com/stix/pricing](https://analytics.dugganusa.com/stix/pricing). Contact: help@dugganusa.com.
 
-_Jeevesus saves. Dredd judges._
+_Threat intelligence you can check._
