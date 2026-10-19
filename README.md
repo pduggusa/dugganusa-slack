@@ -64,7 +64,7 @@ export DUGGANUSA_API_KEY=dugusa_your_key  # required — register a free key (se
 npm start
 ```
 
-The STIX feed is API-key-enforced: anonymous requests get `401`, an unregistered Bearer gets `429`. Grab a **free registered key** at [analytics.dugganusa.com/stix/register](https://analytics.dugganusa.com/stix/register) and set it as `DUGGANUSA_API_KEY`.
+The STIX feed is API-key-enforced: anonymous requests and unregistered keys get `401`; a key past its daily limit (free: 10/day, shared by everyone in the workspace who uses the bot) gets `429`, and the bot reports it as unchecked, never clean. Grab a **free registered key** at [analytics.dugganusa.com/stix/register](https://analytics.dugganusa.com/stix/register) and set it as `DUGGANUSA_API_KEY`.
 
 For Socket Mode (no public URL needed):
 ```bash

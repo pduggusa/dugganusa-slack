@@ -14,7 +14,7 @@
  *   SLACK_BOT_TOKEN       — xoxb-... Bot User OAuth Token
  *   SLACK_SIGNING_SECRET  — Slack app signing secret
  *   SLACK_APP_TOKEN       — xapp-... for Socket Mode (optional)
- *   DUGGANUSA_API_KEY     — DugganUSA API key (optional, free tier works)
+ *   DUGGANUSA_API_KEY     — DugganUSA API key (REQUIRED: anonymous and unregistered keys get 401; free key = 10 lookups/day)
  */
 
 const { App } = require('@slack/bolt');
@@ -141,7 +141,7 @@ function formatResult(value, result) {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: ':white_check_mark: *`' + value + '`* — clean. Not found in 1.9M+ IOC index.',
+      text: ':white_check_mark: *`' + value + '`* — clean. Not found in the DugganUSA IOC index.',
     },
   };
 }
@@ -168,7 +168,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
           '`/dugganusa tor hunt` — suspicious Tor relays',
           '`/dugganusa help` — this message',
           '',
-          '1.9M+ IOCs · 68M+ documents',
+          'Live corpus counts: analytics.dugganusa.com/api/v1/search/stats',
           '<https://analytics.dugganusa.com/stix/register|Free API key> · <https://aipmsec.com|AIPM Audit> · <https://www.dugganusa.com|dugganusa.com>',
         ].join('\n') },
       }],
@@ -268,7 +268,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
       blocks.push({ type: 'section', text: { type: 'mrkdwn', text: '_(' + (iocs.length - 15) + ' more indicators not shown — capped at 15)_' } });
     }
     blocks.push({ type: 'divider' });
-    blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.9M+ IOCs · <https://analytics.dugganusa.com/stix/register|Free API key>' }] });
+    blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · <https://analytics.dugganusa.com/stix/register|Free API key>' }] });
 
     await respond({ response_type: 'in_channel', blocks });
     return;
@@ -281,7 +281,7 @@ app.command('/dugganusa', async ({ command, ack, respond }) => {
     blocks: [
       formatResult(text, result),
       { type: 'divider' },
-      { type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · 1.9M+ IOCs · <https://aipmsec.com|AIPM Audit>' }] },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: 'Powered by <https://www.dugganusa.com|DugganUSA> · <https://aipmsec.com|AIPM Audit>' }] },
     ],
   });
 });
