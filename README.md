@@ -1,5 +1,7 @@
 # DugganUSA Slack Bot
 
+**Docs:** https://docs.dugganusa.com/quickstart/
+
 **You do you. I do me. We share contexts.**
 
 Your channel keeps its conversation; the bot shares only the indicator you paste and returns the DugganUSA Feed's context on it.
